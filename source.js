@@ -22,8 +22,9 @@ const connect = (mapStateToProps, mapDispatchToProps) =>
       render() {
         return (
           <Component
-            {...mapStateToProps(store.getState(), this.props)}
-            {...mapDispatchToProps(store.dispatch, this.props)}
+            {...mapStateToProps(store.getState())}
+            {...mapDispatchToProps(store.dispatch)}
+            {...this.props}
           />
         )
       }
@@ -81,14 +82,16 @@ class ToDoComponent extends React.Component {
       <div>
         <label>{this.props.title || 'Без названия'}</label>
         <div>
-          <input
-            value={this.state.todoText}
-            placeholder="Название задачи"
-            onChange={this.updateText}
-          />
-          <button onClick={this.addTodo}>Добавить</button>
+          <form>
+            <input
+              value={this.state.todoText}
+              placeholder="Название задачи"
+              onChange={this.updateText.bind(this)}
+            />
+            <button type="submit" onClick={this.addTodo.bind(this)}>Добавить</button>
+          </form>
           <ul>
-            {this.props.todos.map((todo, idx) => <li>{todo}</li>)}
+            {this.props.todos.reverse().map((todo, idx) => <li key={idx}>{todo}</li>)}
           </ul>
         </div>
       </div>
@@ -96,15 +99,21 @@ class ToDoComponent extends React.Component {
   }
 
   updateText(e) {
-    const { value } = e.target
-
-    this.state.todoText = value
+    this.setState({
+      todoText: e.target.value
+    })
   }
 
-  addTodo() {
+  addTodo(e) {
+    e.preventDefault()
+    if(this.state.todoText.trim() === '') {
+      alert('Введите название'); return false
+    }
     this.props.addTodo(this.state.todoText)
 
-    this.state.todoText = ''
+    this.setState({
+      todoText: ''
+    })
   }
 }
 
@@ -121,4 +130,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app')
 )
-
