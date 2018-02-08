@@ -64,7 +64,7 @@ const addTodo = todo => ({
 const reducer = (state = [], action) => {
   switch(action.type) {
     case ADD_TODO:
-      state.push(action.payload)
+      state.unshift(action.payload)
       return state
     default:
       return state
@@ -91,7 +91,7 @@ class ToDoComponent extends React.Component {
             <button type="submit" onClick={this.addTodo.bind(this)}>Добавить</button>
           </form>
           <ul>
-            {this.props.todos.reverse().map((todo, idx) => <li key={idx}>{todo}</li>)}
+            {this.props.todos.map((todo, idx) => <li key={idx}>{todo}</li>)}
           </ul>
         </div>
       </div>
